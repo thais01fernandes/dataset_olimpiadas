@@ -44,33 +44,44 @@ library("reactable")
 
 ```{css Estilo do Relatório}
 
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@500&display=swap');
+
 h1.title{ 
-    color: #a178df;
+    font-family: 'Lora', serif;
+    color: #9c89b3;
     font-size: 30px;
     text-align: center;
     font-weight: bold;
 }
-
 h4.author{ 
-    color: #a178df;
-    font-size: 16px;
+    font-family: 'Lora', serif;
+    color: #9c89b3;
+    font-size: 20px;
     text-align: center;
     font-weight: bold;
 }
-
 h4.date{ 
-    color: #a178df;
-    font-size: 16px;
+    font-family: 'Lora', serif;
+    color: #9c89b3;
+    font-size: 12px;
     text-align: center;
     font-weight: bold;
 }
-
 p{
+  font-family: 'Lora', serif;
   text-align: justify;
-  font-size: 11px
+  font-size: 13px
 }
+h2 {
+  font-family: 'Lora', serif;
+  font-size: 15px;
+  text-align: justify;
+}
+
 
 ```
+
 
 ```{r Download dos Dados, include=FALSE}
 
@@ -93,11 +104,13 @@ qtd_competidores <- dados %>%
   mutate(qtd_competidores = gsub(135571, "135.571",qtd_competidores))
 
 qtd_homens <- dados %>% 
+  distinct(id, .keep_all = TRUE) %>% 
   filter(sex == "M") %>% 
   tally() %>% 
   rename(qtd_homens = n) 
 
 qtd_mulheres <- dados %>% 
+  distinct(id, .keep_all = TRUE) %>% 
   filter(sex == "F") %>% 
   tally() %>% 
   rename(qtd_mulheres = n) 
@@ -143,6 +156,12 @@ pct_mulheres_2016 <- dados %>%
   bind_cols(qtd_jogos, qtd_paises, qtd_cidades, qtd_sports, qtd_homens, qtd_mulheres) %>% 
   select(qtd_competidores, qtd_homens, qtd_mulheres, qtd_paises, qtd_jogos, qtd_cidades, qtd_sports) %>% 
   reactable(
+      showPageInfo = FALSE, 
+      showPageSizeOptions = FALSE,
+      fullWidth = F,
+      defaultColDef = colDef(
+      align = "center",
+      headerStyle = list(background = "#d5cabd")),
     columns = list(
       qtd_competidores = colDef("Competidores", format = colFormat(separators =TRUE), minWidth = 115),
       qtd_homens = colDef("Competidores Homens", format = colFormat(separators =TRUE), minWidth = 120),
@@ -275,7 +294,7 @@ Abaixo temos um gráfico de calor sobre o mapa mundi nos mostrando a quantidade 
 
 # Organizando os dados: 
 
-world %>% as.tibble()
+# world %>% as.tibble()
 
   dados_women <- dados %>% 
   distinct(id, year, .keep_all = TRUE) %>% 
@@ -355,7 +374,7 @@ O gráfico abaixo é como se fosse um recorte do gráfico anterior, todavia nele
  
   dados_paises %>% 
   ggplot() + 
-  geom_col(aes(x = "", y = pct, fill = sex), position="fill", alpha = 0.7)+ 
+  geom_col(aes(x = "", y = pct, fill = sex),width = 12, position="fill", alpha = 0.7)+ 
   scale_fill_brewer() +
   facet_grid(cols=vars(noc))+
   scale_fill_manual(name = "Sexo", values = c("paleturquoise3", "#a178df"), labels = c("Feminino", "Masculino")) +
@@ -366,7 +385,7 @@ O gráfico abaixo é como se fosse um recorte do gráfico anterior, todavia nele
   theme_minimal() +
   theme(plot.title = element_text(family = "serif", size = 13, face = "bold", hjust = 0.5, colour = "black"),
         text = element_text(family = "serif"),
-        axis.text = element_text(size = 7),
+        axis.text = element_text(size = 10),
         axis.text.y= element_text(size = 10),
         legend.text = element_text(size = 10, face = "bold"),
         legend.title = element_text(size = 10, face = "bold"),
@@ -496,7 +515,7 @@ No gráfico a seguir podemos observar quais foram os esportes que as mulheres da
   theme_minimal() +
   theme(plot.title = element_text(family = "serif", size = 13, face = "bold", hjust = 0.5, colour = "black"),
         text = element_text(family = "serif"),
-        axis.text = element_text(size = 12),
+        axis.text.y = element_blank(),
         axis.text.x= element_text(size = 12),
         legend.text = element_text(size = 10, face = "bold"),
         legend.title = element_text(size = 14, face = "bold"))
